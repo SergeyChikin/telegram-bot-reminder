@@ -3,22 +3,23 @@ package pro.sky.telegrambot.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(of = "id")
 @Entity
+@Table(name = "notification")
 public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "chat_id")
     private Long chatId;
+    @Column(length = 4096)
     private String task;
+    @Column(name = "date")
     private LocalDateTime date;
 
     public Notification() {

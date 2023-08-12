@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.model.Notification;
 import pro.sky.telegrambot.repository.NotificationRepository;
 import pro.sky.telegrambot.scheduler.Scheduler;
@@ -89,12 +90,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     @Scheduled(cron = "0 0/1 * * * *")
+    @Transactional
     public void checkNotification() {
         scheduler.viewTask()
                 .forEach((notification -> {
                     SendMessage message = new SendMessage(notification.getChatId(),
                             notification.getTask());
                     SendResponse response = telegramBot.execute(message);
+                    notificationRepository.delete(notification);
                 }));
     }
 }
